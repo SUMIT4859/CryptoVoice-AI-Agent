@@ -85,7 +85,10 @@ export function useVoiceRecognition() {
       };
 
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error("Speech recognition error:", event.error);
+        // "no-speech" and "aborted" are expected behaviors, not real errors
+        if (event.error !== "no-speech" && event.error !== "aborted") {
+          console.error("Speech recognition error:", event.error);
+        }
         setIsListening(false);
       };
 
