@@ -9,6 +9,7 @@ interface VoiceButtonProps {
   isLoading: boolean;
   isSpeaking: boolean;
   onClick: () => void;
+  onStop?: () => void;
   disabled?: boolean;
 }
 
@@ -17,6 +18,7 @@ export function VoiceButton({
   isLoading,
   isSpeaking,
   onClick,
+  onStop,
   disabled,
 }: VoiceButtonProps) {
   const getButtonState = () => {
@@ -97,6 +99,18 @@ export function VoiceButton({
         <div className="absolute -bottom-8">
           <Waveform isActive={true} barCount={16} className="text-accent" />
         </div>
+      )}
+
+      {/* Stop button when speaking */}
+      {state === "speaking" && onStop && (
+        <button
+          onClick={onStop}
+          className="absolute top-4 right-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-destructive hover:bg-destructive/80 text-destructive-foreground text-sm font-medium transition-colors"
+          aria-label="Stop audio playback"
+        >
+          <MicOff className="h-4 w-4" />
+          Stop
+        </button>
       )}
 
       {/* Status text */}

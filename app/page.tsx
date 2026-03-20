@@ -8,7 +8,7 @@ import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { Waveform } from "@/components/waveform";
 import {
   useVoiceRecognition,
-  speakText,
+  playAudio,
 } from "@/hooks/use-voice-recognition";
 import { Zap, Sparkles, Radio, ChevronDown } from "lucide-react";
 
@@ -96,7 +96,7 @@ export default function CryptoVoiceAI() {
       // Automatically speak the response
       setIsSpeaking(true);
       setSpeakingMessageId(assistantMessage.id);
-      await speakText(data.answer);
+      await playAudio(data.answer);
       setIsSpeaking(false);
       setSpeakingMessageId(null);
     } catch (error) {
@@ -120,10 +120,18 @@ export default function CryptoVoiceAI() {
     }
   };
 
+  const handleStopAudio = () => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+    setSpeakingMessageId(null);
+  };
+
   const handleSpeakMessage = async (content: string, messageId: string) => {
     setIsSpeaking(true);
     setSpeakingMessageId(messageId);
-    await speakText(content);
+    await playAudio(content);
     setIsSpeaking(false);
     setSpeakingMessageId(null);
   };
@@ -261,6 +269,7 @@ export default function CryptoVoiceAI() {
                 isLoading={isLoading}
                 isSpeaking={isSpeaking}
                 onClick={handleVoiceButtonClick}
+                onStop={isSpeaking ? handleStopAudio : undefined}
                 disabled={!isSupported}
               />
 
